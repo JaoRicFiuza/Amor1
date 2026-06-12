@@ -84,16 +84,17 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             width: 90%;
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         .gallery-item {
             overflow: hidden;
             border-radius: 20px;
+            aspect-ratio: 3 / 4;
             transition: transform 0.5s ease;
         }
 
@@ -211,7 +212,14 @@
     </header>
 
     <main>
-       <section id="gallery" class="panel">
+        <section id="hero" class="panel">
+            <div class="hero-content">
+                <h1>Madu</h1>
+                <p>Uma coleção de momentos especiais.</p>
+            </div>
+        </section>
+
+        <section id="gallery" class="panel">
             <h2>Galeria de Momentos</h2>
             <div class="gallery-grid">
                 <div class="gallery-item"><img src="img/foto1.jpeg" alt="Foto 1"></div>
@@ -300,8 +308,6 @@
                 delay: 1.2,
                 ease: "power3.out"
             });
-
-            // Rolagem padrão sem pin para melhor compatibilidade com Lenis
 
             // Animação da Galeria
             gsap.to("#gallery h2", {

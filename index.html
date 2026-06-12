@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Meu Amor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 1.5rem;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #aaa;
+        }
+
+        .panel {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem 2rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #hero {
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            color: #aaa;
+        }
+
+        #gallery {
+            background-color: #111;
+        }
+
+        #gallery h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 20px;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #message {
+            text-align: center;
+        }
+
+        .message-content {
+            max-width: 800px;
+        }
+
+        .message-content h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .message-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #ccc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #111;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Seção da Proposta */
+        #proposal {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .proposal-content {
+            text-align: center;
+        }
+
+        .proposal-content h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(90deg, #ff6b6b, #ff8787, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .proposal-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-yes {
+            background: linear-gradient(90deg, #ff6b6b, #ff8787);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-no {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-no:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        /* Animações Iniciais */
+        .hero-content h1, .hero-content p, #gallery h2, .gallery-item, #message h2, .message-content p, .proposal-content h2, .btn {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#hero">Início</a></li>
+                <li><a href="#gallery">Galeria</a></li>
+                <li><a href="#message">Mensagem</a></li>
+                <li><a href="#proposal">Proposta</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="panel">
+            <div class="hero-content">
+                <h1>Madu</h1>
+                <p>Uma coleção de momentos especiais.</p>
+            </div>
+        </section>
+
+        <section id="gallery" class="panel">
+            <h2>Galeria de Momentos</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.33.jpeg" alt="Foto 1"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32.jpeg" alt="Foto 2"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (3).jpeg" alt="Foto 3"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (2).jpeg" alt="Foto 4"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (1).jpeg" alt="Foto 5"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.30.jpeg" alt="Foto 6"></div>
+            </div>
+        </section>
+
+        <section id="message" class="panel">
+            <div class="message-content">
+                <h2>Uma mensagem para você</h2>
+                <p>Cada momento ao seu lado é um presente. Esta é apenas uma pequena lembrança de todos os sorrisos, aventuras e alegrias que compartilhamos. Que possamos criar muitas outras memórias inesquecíveis juntos. Eu te amo muito minha vida, Eu espero que eu possar ser a minha melhor versão pra você.</p>
+                <p>Com todo o meu amor.</p>
+            </div>
+        </section>
+
+        <section id="proposal" class="panel">
+            <div class="proposal-content">
+                <h2>Você quer sair comigo?</h2>
+                <div class="proposal-buttons">
+                    <button id="btn-yes" class="btn btn-yes">Sim! ❤️</button>
+                    <button id="btn-no" class="btn btn-no">Claro! ❤️❤️</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Feito com ❤️ para a melhor namorada do mundo.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Configuração do Lenis para rolagem suave
+            const lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+
+            requestAnimationFrame(raf);
+
+            // Integração do Lenis com o ScrollTrigger do GSAP
+            lenis.on('scroll', ScrollTrigger.update);
+
+            gsap.ticker.lagSmoothing(0);
+
+            // Animação do Header
+            gsap.from("header", {
+                y: -100,
+                duration: 1,
+                ease: "power3.out",
+                delay: 0.5
+            });
+
+            // Animação da seção Hero
+            gsap.to("#hero .hero-content h1", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 1,
+                ease: "power3.out"
+            });
+            gsap.to("#hero .hero-content p", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 1.2,
+                ease: "power3.out"
+            });
+
+            // Rolagem padrão sem pin para melhor compatibilidade com Lenis
+
+            // Animação da Galeria
+            gsap.to("#gallery h2", {
+                scrollTrigger: {
+                    trigger: "#gallery",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to(".gallery-item", {
+                scrollTrigger: {
+                    trigger: ".gallery-grid",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Animação da Mensagem
+            gsap.to("#message h2", {
+                scrollTrigger: {
+                    trigger: "#message",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to("#message .message-content p", {
+                scrollTrigger: {
+                    trigger: "#message .message-content",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.3,
+                ease: "power3.out"
+            });
+
+            // Animação da Proposta
+            gsap.to(".proposal-content h2", {
+                scrollTrigger: {
+                    trigger: "#proposal",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to(".btn", {
+                scrollTrigger: {
+                    trigger: ".proposal-buttons",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Botões de Proposta
+            const btnYes = document.getElementById('btn-yes');
+            const btnNo = document.getElementById('btn-no');
+            const phoneNumber = '5531988964942'; // Formato internacional com código do Brasil
+
+            btnYes.addEventListener('click', () => {
+                const message = encodeURIComponent('Sim! Eu quero sair com você! ❤️');
+                window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+            });
+
+            btnNo.addEventListener('click', () => {
+                const message = encodeURIComponent('Claro! ❤️❤️');
+                window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>

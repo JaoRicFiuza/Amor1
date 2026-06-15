@@ -73,6 +73,54 @@
             color: #aaa;
         }
 
+        /* Seção do Contador */
+        #counter-section {
+            background-color: #0a0a0a;
+            text-align: center;
+        }
+
+        #counter-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 800px;
+        }
+
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            min-width: 110px;
+            box-sizing: border-box;
+        }
+
+        .countdown-number {
+            font-size: 3rem;
+            font-weight: 700;
+            display: block;
+            background: linear-gradient(90deg, #ff6b6b, #ff8787);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .countdown-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
         #gallery {
             background-color: #111;
         }
@@ -84,17 +132,16 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr;
             gap: 2rem;
             width: 90%;
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .gallery-item {
             overflow: hidden;
             border-radius: 20px;
-            aspect-ratio: 3 / 4;
             transition: transform 0.5s ease;
         }
 
@@ -103,6 +150,91 @@
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        /* Seção de Motivos (Cards 3D) */
+        #reasons-section {
+            background-color: #0a0a0a;
+            text-align: center;
+        }
+
+        #reasons-section h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            height: 180px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        /* Classe ativada por hover ou clique */
+        .card-container:hover .card-inner,
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-front {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .card-front .number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff6b6b, #ff8787);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-front .heart-icon {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            opacity: 0.6;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #2b1015 0%, #1a080b 100%);
+            border-color: rgba(255, 107, 107, 0.2);
+            transform: rotateY(180deg);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #eee;
         }
 
         #message {
@@ -193,7 +325,7 @@
         }
 
         /* Animações Iniciais */
-        .hero-content h1, .hero-content p, #gallery h2, .gallery-item, #message h2, .message-content p, .proposal-content h2, .btn {
+        .hero-content h1, .hero-content p, #counter-section h2, .countdown-box, #gallery h2, .gallery-item, #reasons-section h2, .card-container, #message h2, .message-content p, .proposal-content h2, .btn {
             opacity: 0;
             transform: translateY(20px);
         }
@@ -204,7 +336,9 @@
         <nav>
             <ul>
                 <li><a href="#hero">Início</a></li>
+                <li><a href="#counter-section">Tempo Juntos</a></li>
                 <li><a href="#gallery">Galeria</a></li>
+                <li><a href="#reasons-section">Motivos</a></li>
                 <li><a href="#message">Mensagem</a></li>
                 <li><a href="#proposal">Proposta</a></li>
             </ul>
@@ -219,21 +353,139 @@
             </div>
         </section>
 
+        <section id="counter-section" class="panel">
+            <h2>Tempo que compartilhamos juntos</h2>
+            <div class="countdown-container">
+                <div class="countdown-box">
+                    <span id="days" class="countdown-number">00</span>
+                    <span class="countdown-label">Dias</span>
+                </div>
+                <div class="countdown-box">
+                    <span id="hours" class="countdown-number">00</span>
+                    <span class="countdown-label">Horas</span>
+                </div>
+                <div class="countdown-box">
+                    <span id="minutes" class="countdown-number">00</span>
+                    <span class="countdown-label">Minutos</span>
+                </div>
+                <div class="countdown-box">
+                    <span id="seconds" class="countdown-number">00</span>
+                    <span class="countdown-label">Segundos</span>
+                </div>
+            </div>
+        </section>
+
         <section id="gallery" class="panel">
             <h2>Galeria de Momentos</h2>
             <div class="gallery-grid">
-                <div class="gallery-item"><img src="Amor/img/foto1.jpeg" alt="Foto 1"></div>
-                <div class="gallery-item"><img src="Amor/img/foto2.jpeg" alt="Foto 2"></div>
-                <div class="gallery-item"><img src="Amor/img/foto3.jpeg" alt="Foto 3"></div>
-                <div class="gallery-item"><img src="Amor/img/foto4.jpeg" alt="Foto 4"></div>
-                <div class="gallery-item"><img src="Amor/img/foto5.jpeg" alt="Foto 5"></div>
-                <div class="gallery-item"><img src="Amor/img/foto6.jpeg" alt="Foto 6"></div>
-                <div class="gallery-item"><img src="Amor/img/foto7.jpeg" alt="Foto 7"></div>
-                <div class="gallery-item"><img src="Amor/img/foto8.jpeg" alt="Foto 8"></div>
-                <div class="gallery-item"><img src="Amor/img/foto9.jpeg" alt="Foto 9"></div>
-                <div class="gallery-item"><img src="Amor/img/foto10.jpeg" alt="Foto 10"></div>
-                <div class="gallery-item"><img src="Amor/img/foto11.jpeg" alt="Foto 11"></div>
-                <div class="gallery-item"><img src="Amor/img/foto12.jpeg" alt="Foto 12"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.33.jpeg" alt="Foto 1"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32.jpeg" alt="Foto 2"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (3).jpeg" alt="Foto 3"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (2).jpeg" alt="Foto 4"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (1).jpeg" alt="Foto 5"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.30.jpeg" alt="Foto 6"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.55.jpeg" alt="Foto 7"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (1).jpeg" alt="Foto 8"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (2).jpeg" alt="Foto 9"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (3).jpeg" alt="Foto 10"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (4).jpeg" alt="Foto 11"></div>
+                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56.jpeg" alt="Foto 12"></div>
+            </div>
+        </section>
+
+        <section id="reasons-section" class="panel">
+            <h2>10 Motivos por que eu te amo</h2>
+            <div class="reasons-grid">
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">01</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">O seu sorriso transforma meu pior dia em um paraiso feliz.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">02</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">A forma como você sempre me faz ser minha melhor versão .</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">03</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Seu beijo é aquilo que eu mais cobiço .</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">04</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Nossas conversas e as piadas que só nós entendemos.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">05</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Sua determinação e o orgulho que mais tenho sobre você.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">06</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Como cada momento simples vira uma espeçial ao seu lado.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">07</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Seu olhar doce que me acalma instantaneamente.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">08</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">A parceria perfeita que construímos até hoje.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">09</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Você me inspira a ser a minha melhor versão todos os dias.</div>
+                    </div>
+                </div>
+                <div class="card-container" onclick="this.classList.toggle('flipped')">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <span class="number">10</span>
+                            <span class="heart-icon">❤️</span>
+                        </div>
+                        <div class="card-back">Por ser exatamente quem você é: o amor da minha vida.</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -267,6 +519,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
 
+            // Configuração do Lenis para rolagem suave
             const lenis = new Lenis({
                 duration: 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -279,9 +532,78 @@
 
             requestAnimationFrame(raf);
 
+            // Integração do Lenis com o ScrollTrigger do GSAP
             lenis.on('scroll', ScrollTrigger.update);
 
             gsap.ticker.lagSmoothing(0);
+
+            // --- LÓGICA DO CONTADOR DE TEMPO JUNTOS (03/09/2022) ---
+            const startDate = new Date('2022-09-03T00:00:00');
+
+            function updateCounter() {
+                const now = new Date();
+                const difference = now - startDate;
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+
+            setInterval(updateCounter, 1000);
+            updateCounter();
+            // --------------------------------------------------------
+
+            // --- EFEITO DE CORAÇÕES NO SCROLL ---
+            let mouseX = 0;
+            let mouseY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            const heartColors = ['#ff6b6b', '#ff8787', '#f783ac', '#da77f2', '#e599f7', '#ffb3b3', '#ff3366', '#ff66b2'];
+
+            window.addEventListener('wheel', () => {
+                for (let i = 0; i < 2; i++) {
+                    createHeartParticle(mouseX, mouseY);
+                }
+            });
+
+            function createHeartParticle(x, y) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                heart.style.pointerEvents = 'none';
+                heart.style.fontSize = `${gsap.utils.random(15, 28)}px`;
+                heart.style.zIndex = '9999';
+                
+                const randomColor = heartColors[Math.floor(Math.random() * heartColors.length)];
+                heart.style.color = randomColor;
+                heart.style.textShadow = `0 0 5px ${randomColor}`;
+
+                document.body.appendChild(heart);
+
+                gsap.to(heart, {
+                    x: gsap.utils.random(-80, 80),
+                    y: gsap.utils.random(-120, -40),
+                    rotation: gsap.utils.random(-45, 45),
+                    opacity: 0,
+                    scale: 0.5,
+                    duration: gsap.utils.random(0.8, 1.5),
+                    ease: "power2.out",
+                    onComplete: () => heart.remove()
+                });
+            }
+            // -------------------------------------
 
             // Animação do Header
             gsap.from("header", {
@@ -307,6 +629,30 @@
                 ease: "power3.out"
             });
 
+            // Animação da Seção do Contador
+            gsap.to("#counter-section h2", {
+                scrollTrigger: {
+                    trigger: "#counter-section",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to(".countdown-box", {
+                scrollTrigger: {
+                    trigger: ".countdown-container",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "power3.out"
+            });
+
             // Animação da Galeria
             gsap.to("#gallery h2", {
                 scrollTrigger: {
@@ -329,6 +675,30 @@
                 scale: 1,
                 duration: 0.8,
                 stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Animação da Seção de Motivos
+            gsap.to("#reasons-section h2", {
+                scrollTrigger: {
+                    trigger: "#reasons-section",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            gsap.to(".card-container", {
+                scrollTrigger: {
+                    trigger: ".reasons-grid",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.1,
                 ease: "power3.out"
             });
 

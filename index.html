@@ -567,7 +567,6 @@
             <p class="scratch-instruction">Raspe a área abaixo com o mouse ou o dedo para revelar!</p>
             <div class="scratch-container">
                 <div class="scratch-secret">
-                    <!-- Raspadinha configurada com a foto 1 como padrão secreto -->
                     <img src="Amor/img/foto12.jpeg" alt="Foto Secreta">
                     <div class="scratch-secret-text">Você é minha melhor escolha! ❤️</div>
                 </div>
@@ -686,31 +685,52 @@
             canvas.addEventListener('touchmove', scratch);
             window.addEventListener('touchend', () => isDrawing = false);
 
-            // --- EFEITO DE CORAÇÕES NO SCROLL ---
-            let mouseX = 0;
-            let mouseY = 0;
+            // --- EFEITO DE CORAÇÕES NO SCROLL (PC E CELULAR) ---
+            let lastX = 0;
+            let lastY = 0;
+            let touchThrottle = 0;
 
-            window.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-
+            // Cores dos corações
             const heartColors = ['#ff6b6b', '#ff8787', '#f783ac', '#da77f2', '#e599f7', '#ffb3b3', '#ff3366', '#ff66b2'];
 
+            // Atualiza coordenadas no PC
+            window.addEventListener('mousemove', (e) => {
+                lastX = e.clientX;
+                lastY = e.clientY;
+            });
+
+            // Dispara corações no PC (Roda do mouse)
             window.addEventListener('wheel', () => {
                 for (let i = 0; i < 2; i++) {
-                    createHeartParticle(mouseX, mouseY);
+                    createHeartParticle(lastX, lastY);
                 }
             });
 
+            // Dispara corações no Celular (Ao arrastar o dedo)
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    const x = e.touches[0].clientX;
+                    const y = e.touches[0].clientY;
+                    
+                    // Controle para não criar corações demais e travar o celular
+                    touchThrottle++;
+                    if (touchThrottle % 4 === 0) {
+                        createHeartParticle(x, y);
+                    }
+                }
+            }, { passive: true });
+
             function createHeartParticle(x, y) {
+                // Não cria partículas se as coordenadas forem inválidas
+                if (!x || !y) return;
+
                 const heart = document.createElement('div');
                 heart.innerHTML = '❤️';
                 heart.style.position = 'fixed';
                 heart.style.left = `${x}px`;
                 heart.style.top = `${y}px`;
                 heart.style.pointerEvents = 'none';
-                heart.style.fontSize = `${gsap.utils.random(15, 28)}px`;
+                heart.style.fontSize = `${gsap.utils.random(15, 25)}px`;
                 heart.style.zIndex = '9999';
                 
                 const randomColor = heartColors[Math.floor(Math.random() * heartColors.length)];
@@ -720,12 +740,12 @@
                 document.body.appendChild(heart);
 
                 gsap.to(heart, {
-                    x: gsap.utils.random(-80, 80),
-                    y: gsap.utils.random(-120, -40),
-                    rotation: gsap.utils.random(-45, 45),
+                    x: gsap.utils.random(-60, 60),
+                    y: gsap.utils.random(-100, -40),
+                    rotation: gsap.utils.random(-30, 30),
                     opacity: 0,
-                    scale: 0.5,
-                    duration: gsap.utils.random(0.8, 1.5),
+                    scale: 0.4,
+                    duration: gsap.utils.random(0.8, 1.2),
                     ease: "power2.out",
                     onComplete: () => heart.remove()
                 });

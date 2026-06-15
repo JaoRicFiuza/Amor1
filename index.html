@@ -262,6 +262,7 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 2px solid rgba(255, 255, 255, 0.1);
+            background: #1a1a1a;
         }
 
         .scratch-secret {
@@ -274,9 +275,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: #1a1a1a;
             box-sizing: border-box;
-            padding: 2rem;
         }
 
         .scratch-secret img {
@@ -298,6 +297,8 @@
             font-weight: 700;
             border: 1px solid rgba(255, 107, 107, 0.3);
             color: #fff;
+            margin-top: auto;
+            margin-bottom: 2rem;
         }
 
         #scratch-canvas {
@@ -567,7 +568,7 @@
             <p class="scratch-instruction">Raspe a área abaixo com o mouse ou o dedo para revelar!</p>
             <div class="scratch-container">
                 <div class="scratch-secret">
-                    <img src="Amor/img/foto12.jpeg" alt="Foto Secreta">
+                    <img id="secret-image" src="Amor/img/foto12.jpeg" alt="Foto Secreta">
                     <div class="scratch-secret-text">Você é minha melhor escolha! ❤️</div>
                 </div>
                 <canvas id="scratch-canvas" width="320" height="320"></canvas>
@@ -641,17 +642,27 @@
             setInterval(updateCounter, 1000);
             updateCounter();
 
-            // --- LÓGICA DA RASPADINHA (CANVAS) ---
+            // --- LÓGICA DA RASPADINHA CORRIGIDA ---
             const canvas = document.getElementById('scratch-canvas');
             const ctx = canvas.getContext('2d');
+            const secretImg = document.getElementById('secret-image');
             let isDrawing = false;
 
-            ctx.fillStyle = '#444';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#666';
-            ctx.font = '20px Inter';
-            ctx.textAlign = 'center';
-            ctx.fillText('Raspe aqui! ❤️', canvas.width / 2, canvas.height / 2);
+            function initCanvas() {
+                ctx.fillStyle = '#333333';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#888888';
+                ctx.font = 'bold 20px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Raspe aqui! ❤️', canvas.width / 2, canvas.height / 2);
+            }
+
+            // Garante o desenho da cobertura apenas após o carregamento da imagem ou de imediato
+            if (secretImg.complete) {
+                initCanvas();
+            } else {
+                secretImg.addEventListener('load', initCanvas);
+            }
 
             function getCoordinates(e) {
                 const rect = canvas.getBoundingClientRect();
@@ -681,8 +692,8 @@
             canvas.addEventListener('mousemove', scratch);
             window.addEventListener('mouseup', () => isDrawing = false);
 
-            canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
-            canvas.addEventListener('touchmove', scratch);
+            canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, { passive: false });
+            canvas.addEventListener('touchmove', scratch, { passive: false });
             window.addEventListener('touchend', () => isDrawing = false);
 
             // --- EFEITO DE CORAÇÕES NO SCROLL (PC E CELULAR) ---
@@ -690,29 +701,24 @@
             let lastY = 0;
             let touchThrottle = 0;
 
-            // Cores dos corações
             const heartColors = ['#ff6b6b', '#ff8787', '#f783ac', '#da77f2', '#e599f7', '#ffb3b3', '#ff3366', '#ff66b2'];
 
-            // Atualiza coordenadas no PC
             window.addEventListener('mousemove', (e) => {
                 lastX = e.clientX;
                 lastY = e.clientY;
             });
 
-            // Dispara corações no PC (Roda do mouse)
             window.addEventListener('wheel', () => {
                 for (let i = 0; i < 2; i++) {
                     createHeartParticle(lastX, lastY);
                 }
             });
 
-            // Dispara corações no Celular (Ao arrastar o dedo)
             window.addEventListener('touchmove', (e) => {
                 if (e.touches.length > 0) {
                     const x = e.touches[0].clientX;
                     const y = e.touches[0].clientY;
                     
-                    // Controle para não criar corações demais e travar o celular
                     touchThrottle++;
                     if (touchThrottle % 4 === 0) {
                         createHeartParticle(x, y);
@@ -721,7 +727,6 @@
             }, { passive: true });
 
             function createHeartParticle(x, y) {
-                // Não cria partículas se as coordenadas forem inválidas
                 if (!x || !y) return;
 
                 const heart = document.createElement('div');

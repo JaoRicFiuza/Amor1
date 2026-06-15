@@ -187,7 +187,6 @@
             transform-style: preserve-3d;
         }
 
-        /* Classe ativada por hover ou clique */
         .card-container:hover .card-inner,
         .card-container.flipped .card-inner {
             transform: rotateY(180deg);
@@ -235,6 +234,79 @@
             font-size: 0.95rem;
             line-height: 1.4;
             color: #eee;
+        }
+
+        /* Seção da Raspadinha */
+        #scratch-section {
+            background-color: #111;
+            text-align: center;
+        }
+
+        #scratch-section h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .scratch-instruction {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .scratch-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scratch-secret {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #1a1a1a;
+            box-sizing: border-box;
+            padding: 2rem;
+        }
+
+        .scratch-secret img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .scratch-secret-text {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #fff;
+        }
+
+        #scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 3;
+            cursor: crosshair;
+            touch-action: none;
         }
 
         #message {
@@ -325,7 +397,7 @@
         }
 
         /* Animações Iniciais */
-        .hero-content h1, .hero-content p, #counter-section h2, .countdown-box, #gallery h2, .gallery-item, #reasons-section h2, .card-container, #message h2, .message-content p, .proposal-content h2, .btn {
+        .hero-content h1, .hero-content p, #counter-section h2, .countdown-box, #gallery h2, .gallery-item, #reasons-section h2, .card-container, #scratch-section h2, .scratch-instruction, .scratch-container, #message h2, .message-content p, .proposal-content h2, .btn {
             opacity: 0;
             transform: translateY(20px);
         }
@@ -339,6 +411,7 @@
                 <li><a href="#counter-section">Tempo Juntos</a></li>
                 <li><a href="#gallery">Galeria</a></li>
                 <li><a href="#reasons-section">Motivos</a></li>
+                <li><a href="#scratch-section">Surpresa</a></li>
                 <li><a href="#message">Mensagem</a></li>
                 <li><a href="#proposal">Proposta</a></li>
             </ul>
@@ -378,18 +451,18 @@
         <section id="gallery" class="panel">
             <h2>Galeria de Momentos</h2>
             <div class="gallery-grid">
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.33.jpeg" alt="Foto 1"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32.jpeg" alt="Foto 2"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (3).jpeg" alt="Foto 3"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (2).jpeg" alt="Foto 4"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.32 (1).jpeg" alt="Foto 5"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.10.30.jpeg" alt="Foto 6"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.55.jpeg" alt="Foto 7"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (1).jpeg" alt="Foto 8"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (2).jpeg" alt="Foto 9"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (3).jpeg" alt="Foto 10"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56 (4).jpeg" alt="Foto 11"></div>
-                <div class="gallery-item"><img src="img/WhatsApp Image 2026-06-12 at 11.31.56.jpeg" alt="Foto 12"></div>
+                <div class="gallery-item"><img src="img/foto1.jpeg" alt="Foto 1"></div>
+                <div class="gallery-item"><img src="img/foto2.jpeg" alt="Foto 2"></div>
+                <div class="gallery-item"><img src="img/foto3.jpeg" alt="Foto 3"></div>
+                <div class="gallery-item"><img src="img/foto4.jpeg" alt="Foto 4"></div>
+                <div class="gallery-item"><img src="img/foto5.jpeg" alt="Foto 5"></div>
+                <div class="gallery-item"><img src="img/foto6.jpeg" alt="Foto 6"></div>
+                <div class="gallery-item"><img src="img/foto7.jpeg" alt="Foto 7"></div>
+                <div class="gallery-item"><img src="img/foto8.jpeg" alt="Foto 8"></div>
+                <div class="gallery-item"><img src="img/foto9.jpeg" alt="Foto 9"></div>
+                <div class="gallery-item"><img src="img/foto10.jpeg" alt="Foto 10"></div>
+                <div class="gallery-item"><img src="img/foto11.jpeg" alt="Foto 11"></div>
+                <div class="gallery-item"><img src="img/foto12.jpeg" alt="Foto 12"></div>
             </div>
         </section>
 
@@ -402,7 +475,7 @@
                             <span class="number">01</span>
                             <span class="heart-icon">❤️</span>
                         </div>
-                        <div class="card-back">O seu sorriso transforma meu pior dia em um paraiso feliz.</div>
+                        <div class="card-back">O seu sorriso transforma totalmente o meu dia.</div>
                     </div>
                 </div>
                 <div class="card-container" onclick="this.classList.toggle('flipped')">
@@ -411,7 +484,7 @@
                             <span class="number">02</span>
                             <span class="heart-icon">❤️</span>
                         </div>
-                        <div class="card-back">A forma como você sempre me faz ser minha melhor versão .</div>
+                        <div class="card-back">A forma como você cuida de mim e me apoia.</div>
                     </div>
                 </div>
                 <div class="card-container" onclick="this.classList.toggle('flipped')">
@@ -420,7 +493,7 @@
                             <span class="number">03</span>
                             <span class="heart-icon">❤️</span>
                         </div>
-                        <div class="card-back">Seu beijo é aquilo que eu mais cobiço .</div>
+                        <div class="card-back">Seu abraço é o lugar mais seguro do mundo.</div>
                     </div>
                 </div>
                 <div class="card-container" onclick="this.classList.toggle('flipped')">
@@ -438,7 +511,7 @@
                             <span class="number">05</span>
                             <span class="heart-icon">❤️</span>
                         </div>
-                        <div class="card-back">Sua determinação e o orgulho que mais tenho sobre você.</div>
+                        <div class="card-back">Sua determinação e o orgulho que tenho de você.</div>
                     </div>
                 </div>
                 <div class="card-container" onclick="this.classList.toggle('flipped')">
@@ -447,7 +520,7 @@
                             <span class="number">06</span>
                             <span class="heart-icon">❤️</span>
                         </div>
-                        <div class="card-back">Como cada momento simples vira uma espeçial ao seu lado.</div>
+                        <div class="card-back">Como cada momento simples vira uma aventura ao seu lado.</div>
                     </div>
                 </div>
                 <div class="card-container" onclick="this.classList.toggle('flipped')">
@@ -489,6 +562,19 @@
             </div>
         </section>
 
+        <section id="scratch-section" class="panel">
+            <h2>Uma Surpresa Especial</h2>
+            <p class="scratch-instruction">Raspe a área abaixo com o mouse ou o dedo para revelar!</p>
+            <div class="scratch-container">
+                <div class="scratch-secret">
+                    <!-- Raspadinha configurada com a foto 1 como padrão secreto -->
+                    <img src="img/foto1.jpeg" alt="Foto Secreta">
+                    <div class="scratch-secret-text">Você é o meu melhor destino! ❤️</div>
+                </div>
+                <canvas id="scratch-canvas" width="320" height="320"></canvas>
+            </div>
+        </section>
+
         <section id="message" class="panel">
             <div class="message-content">
                 <h2>Uma mensagem para você</h2>
@@ -519,7 +605,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             gsap.registerPlugin(ScrollTrigger);
 
-            // Configuração do Lenis para rolagem suave
             const lenis = new Lenis({
                 duration: 1.2,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -532,7 +617,6 @@
 
             requestAnimationFrame(raf);
 
-            // Integração do Lenis com o ScrollTrigger do GSAP
             lenis.on('scroll', ScrollTrigger.update);
 
             gsap.ticker.lagSmoothing(0);
@@ -557,7 +641,50 @@
 
             setInterval(updateCounter, 1000);
             updateCounter();
-            // --------------------------------------------------------
+
+            // --- LÓGICA DA RASPADINHA (CANVAS) ---
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            ctx.fillStyle = '#444';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#666';
+            ctx.font = '20px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Raspe aqui! ❤️', canvas.width / 2, canvas.height / 2);
+
+            function getCoordinates(e) {
+                const rect = canvas.getBoundingClientRect();
+                if (e.touches && e.touches.length > 0) {
+                    return {
+                        x: e.touches[0].clientX - rect.left,
+                        y: e.touches[0].clientY - rect.top
+                    };
+                }
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const coords = getCoordinates(e);
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(coords.x, coords.y, 25, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
+            canvas.addEventListener('mousemove', scratch);
+            window.addEventListener('mouseup', () => isDrawing = false);
+
+            canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); });
+            canvas.addEventListener('touchmove', scratch);
+            window.addEventListener('touchend', () => isDrawing = false);
 
             // --- EFEITO DE CORAÇÕES NO SCROLL ---
             let mouseX = 0;
@@ -603,9 +730,8 @@
                     onComplete: () => heart.remove()
                 });
             }
-            // -------------------------------------
 
-            // Animação do Header
+            // Animações de Scroll com GSAP
             gsap.from("header", {
                 y: -100,
                 duration: 1,
@@ -613,7 +739,6 @@
                 delay: 0.5
             });
 
-            // Animação da seção Hero
             gsap.to("#hero .hero-content h1", {
                 opacity: 1,
                 y: 0,
@@ -629,7 +754,6 @@
                 ease: "power3.out"
             });
 
-            // Animação da Seção do Contador
             gsap.to("#counter-section h2", {
                 scrollTrigger: {
                     trigger: "#counter-section",
@@ -653,7 +777,6 @@
                 ease: "power3.out"
             });
 
-            // Animação da Galeria
             gsap.to("#gallery h2", {
                 scrollTrigger: {
                     trigger: "#gallery",
@@ -678,7 +801,6 @@
                 ease: "power3.out"
             });
 
-            // Animação da Seção de Motivos
             gsap.to("#reasons-section h2", {
                 scrollTrigger: {
                     trigger: "#reasons-section",
@@ -702,7 +824,29 @@
                 ease: "power3.out"
             });
 
-            // Animação da Mensagem
+            gsap.to("#scratch-section h2, .scratch-instruction", {
+                scrollTrigger: {
+                    trigger: "#scratch-section",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            gsap.to(".scratch-container", {
+                scrollTrigger: {
+                    trigger: ".scratch-container",
+                    start: "top center",
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+
             gsap.to("#message h2", {
                 scrollTrigger: {
                     trigger: "#message",
@@ -726,7 +870,6 @@
                 ease: "power3.out"
             });
 
-            // Animação da Proposta
             gsap.to(".proposal-content h2", {
                 scrollTrigger: {
                     trigger: "#proposal",
@@ -750,7 +893,6 @@
                 ease: "power3.out"
             });
 
-            // Botões de Proposta
             const btnYes = document.getElementById('btn-yes');
             const btnNo = document.getElementById('btn-no');
             const phoneNumber = '5531988964942';

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
      ======================================================= */
   const CONFIG = {
     // Data em que vocês começaram (AAAA-MM-DD). Usada no contador.
-    dataInicio: '2024-02-14T00:00:00',
+    dataInicio: '2022-09-03T00:00:00',
 
     // Seu número com DDI + DDD, só números:
     whatsapp: '5531988964942',

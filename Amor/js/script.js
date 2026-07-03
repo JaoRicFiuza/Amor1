@@ -254,8 +254,13 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const storyDots = Array.from(dotsWrap.querySelectorAll('.story-dot'));
 
+      const clearStoryDrag = () => {
+        slides.forEach((s) => { s.style.transition = ''; s.style.transform = ''; });
+      };
+
       const setActiveStorySlide = (i) => {
         storyIndex = i;
+        clearStoryDrag();
         slides.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
         storyDots.forEach((d, idx) => d.classList.toggle('is-active', idx === i));
       };
@@ -275,12 +280,47 @@ document.addEventListener('DOMContentLoaded', () => {
       storyPrev && storyPrev.addEventListener('click', () => goToStorySlide(storyIndex - 1));
       storyNext && storyNext.addEventListener('click', () => goToStorySlide(storyIndex + 1));
 
-      let storyTouchX = 0;
-      storyCarousel.addEventListener('touchstart', (e) => (storyTouchX = e.touches[0].clientX), { passive: true });
-      storyCarousel.addEventListener('touchend', (e) => {
-        const dx = e.changedTouches[0].clientX - storyTouchX;
-        if (Math.abs(dx) > 50) goToStorySlide(storyIndex + (dx < 0 ? 1 : -1));
-      }, { passive: true });
+      /* arrastar com o dedo (ou mouse) para trocar de momento */
+      const DRAG_THRESHOLD = 60;
+      const DRAG_MAX_VISUAL = 140;
+      let dragging = false;
+      let dragStartX = 0;
+      let dragDeltaX = 0;
+      let dragSlide = null;
+
+      const onStoryPointerDown = (e) => {
+        if (e.target.closest('.story-arrow, .story-dot')) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true;
+        dragStartX = e.clientX;
+        dragDeltaX = 0;
+        dragSlide = slides[storyIndex];
+        if (dragSlide) dragSlide.style.transition = 'none';
+        if (storyCarousel.setPointerCapture) {
+          try { storyCarousel.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      };
+
+      const onStoryPointerMove = (e) => {
+        if (!dragging || !dragSlide) return;
+        dragDeltaX = e.clientX - dragStartX;
+        const visual = Math.max(-DRAG_MAX_VISUAL, Math.min(DRAG_MAX_VISUAL, dragDeltaX * 0.6));
+        dragSlide.style.transform = 'translateX(' + visual + 'px)';
+      };
+
+      const onStoryPointerUp = () => {
+        if (!dragging) return;
+        dragging = false;
+        const advance = Math.abs(dragDeltaX) > DRAG_THRESHOLD;
+        clearStoryDrag();
+        if (advance) goToStorySlide(storyIndex + (dragDeltaX < 0 ? 1 : -1));
+        dragSlide = null;
+      };
+
+      storyCarousel.addEventListener('pointerdown', onStoryPointerDown);
+      storyCarousel.addEventListener('pointermove', onStoryPointerMove);
+      storyCarousel.addEventListener('pointerup', onStoryPointerUp);
+      storyCarousel.addEventListener('pointercancel', onStoryPointerUp);
 
       // com movimento reduzido ou sem GSAP/ScrollTrigger, o carrossel vira manual (seta/swipe), sem prender a rolagem
       if (!reduceMotion && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && slides.length > 1) {

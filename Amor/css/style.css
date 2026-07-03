@@ -383,6 +383,8 @@ nav ul a:hover::after { width: 100%; }
   height: 100vh;
   overflow: hidden;
   background: var(--bg-3);
+  touch-action: pan-y;
+  cursor: grab;
 }
 .story-slides { position: relative; width: 100%; height: 100%; }
 .story-slide {
@@ -393,7 +395,7 @@ nav ul a:hover::after { width: 100%; }
   opacity: 0;
   display: flex;
   align-items: flex-end;
-  transition: opacity 1s var(--ease);
+  transition: opacity 1s var(--ease), transform 0.4s var(--ease);
 }
 .story-slide.is-active { opacity: 1; z-index: 1; }
 .story-slide::after {

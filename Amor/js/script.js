@@ -1,3 +1,10 @@
+// Registra o service worker (permite "adicionar à tela inicial" como app).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* =======================================================
@@ -16,8 +23,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // (Opcional) Link direto de um .mp3 pra tocar de fundo.
     // Deixe '' pra não mostrar o botão de música.
     musicaUrl: '',
+
+    // Cápsula do tempo: só pode ser aberta a partir dessa data (AAAA-MM-DD).
+    capsula: {
+      dataAbertura: '2026-09-03T00:00:00',
+      mensagem: 'Se você está lendo isso, é porque chegou o dia que eu separei pra te dizer mais uma coisa: eu ainda te amo do jeitinho que amava quando escrevi essa cartinha, só que agora um tanto maior. Obrigado por continuar escolhendo a gente todos os dias. Feliz mais um tempo juntos, meu amor 💛',
+    },
   };
   /* ======================================================= */
+
+  // Perguntas do quiz do casal (edite pergunta, opções e qual é a correta).
+  // "correta" é o índice da opção certa dentro de "opcoes" (0 = primeira).
+  const QUIZ = [
+    {
+      pergunta: 'Que dia do mês é o nosso "dia do casal"?',
+      opcoes: ['Dia 14', 'Dia 3', 'Dia 20'],
+      correta: 1,
+      certo: 'Isso aí! Todo dia 3 é nosso 💛',
+      errado: 'Quase! Mas fica de olho no dia 3 😉',
+    },
+    {
+      pergunta: 'Qual apelido ele mais usa pra te chamar?',
+      opcoes: ['Xuxu', 'Totoza', 'Docinho'],
+      correta: 1,
+      certo: 'Com certeza, minha totoza 🥰',
+      errado: 'Haha, quase! Mas "totoza" é o queridinho aqui 💛',
+    },
+    {
+      pergunta: 'Desde quando a gente tá junto?',
+      opcoes: ['14/02/2024', '01/01/2023', '03/09/2022'],
+      correta: 2,
+      certo: 'Isso, desde 03/09/2022 e contando ❤️',
+      errado: 'Quase! A nossa data é 03/09/2022 🌹',
+    },
+    {
+      pergunta: 'O que ele mais gosta de fazer com você?',
+      opcoes: ['Do nosso jeitinho, nas coisas simples', 'Assistir série sozinho', 'Dormir cedo sem falar nada'],
+      correta: 0,
+      certo: 'Exatamente, o nosso jeitinho é o melhor 💛',
+      errado: 'Quase! O nosso jeitinho de sempre é o favorito 🥹',
+    },
+    {
+      pergunta: 'No fim das contas, o que ele sente por você?',
+      opcoes: ['Só um carinho', 'Um amor gigante, pra sempre', 'Não sei ao certo'],
+      correta: 1,
+      certo: 'Isso mesmo, um amor gigante, pra sempre 💛',
+      errado: 'A resposta certa é: um amor gigante, pra sempre 🌹',
+    },
+  ];
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const preloader = document.getElementById('preloader');
@@ -55,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll(selector).forEach((el, i) =>
         el.style.setProperty('--d', (i * step) + 's'));
     stagger('.gallery-item', 0.05);
-    stagger('.tl-item', 0.08);
     stagger('.count-box', 0.08);
 
     /* ---------- Rolagem suave (Lenis) ---------- */
@@ -182,6 +234,70 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCounter();
     setInterval(updateCounter, 1000);
 
+    /* ---------- Nossa história: carrossel cinematográfico ---------- */
+    const storyCarousel = document.getElementById('story-carousel');
+    if (storyCarousel) {
+      const slides = Array.from(storyCarousel.querySelectorAll('.story-slide'));
+      const dotsWrap = document.getElementById('story-dots');
+      const storyPrev = document.getElementById('story-prev');
+      const storyNext = document.getElementById('story-next');
+      let storyIndex = 0;
+      let storyScrollTrigger = null;
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'story-dot' + (i === 0 ? ' is-active' : '');
+        dot.setAttribute('aria-label', 'Momento ' + (i + 1));
+        dot.addEventListener('click', () => goToStorySlide(i));
+        dotsWrap.appendChild(dot);
+      });
+      const storyDots = Array.from(dotsWrap.querySelectorAll('.story-dot'));
+
+      const setActiveStorySlide = (i) => {
+        storyIndex = i;
+        slides.forEach((s, idx) => s.classList.toggle('is-active', idx === i));
+        storyDots.forEach((d, idx) => d.classList.toggle('is-active', idx === i));
+      };
+
+      const goToStorySlide = (i) => {
+        i = Math.max(0, Math.min(slides.length - 1, i));
+        if (storyScrollTrigger) {
+          const y = storyScrollTrigger.start +
+            (storyScrollTrigger.end - storyScrollTrigger.start) * (i / (slides.length - 1));
+          if (lenis) lenis.scrollTo(y, { duration: 1 });
+          else window.scrollTo({ top: y, behavior: 'smooth' });
+        } else {
+          setActiveStorySlide(i);
+        }
+      };
+
+      storyPrev && storyPrev.addEventListener('click', () => goToStorySlide(storyIndex - 1));
+      storyNext && storyNext.addEventListener('click', () => goToStorySlide(storyIndex + 1));
+
+      let storyTouchX = 0;
+      storyCarousel.addEventListener('touchstart', (e) => (storyTouchX = e.touches[0].clientX), { passive: true });
+      storyCarousel.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - storyTouchX;
+        if (Math.abs(dx) > 50) goToStorySlide(storyIndex + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+
+      // com movimento reduzido ou sem GSAP/ScrollTrigger, o carrossel vira manual (seta/swipe), sem prender a rolagem
+      if (!reduceMotion && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && slides.length > 1) {
+        storyScrollTrigger = ScrollTrigger.create({
+          trigger: storyCarousel,
+          start: 'top top',
+          end: () => '+=' + (slides.length - 1) * window.innerHeight,
+          pin: true,
+          scrub: true,
+          onUpdate: (self) => {
+            const i = Math.round(self.progress * (slides.length - 1));
+            if (i !== storyIndex) setActiveStorySlide(i);
+          },
+        });
+      }
+    }
+
     /* ---------- Lightbox da galeria ---------- */
     const imgs = Array.from(document.querySelectorAll('.gallery-item img'));
     const lb = document.getElementById('lightbox');
@@ -221,6 +337,83 @@ document.addEventListener('DOMContentLoaded', () => {
       const dx = e.changedTouches[0].clientX - sx;
       if (Math.abs(dx) > 50) showLb(idx + (dx < 0 ? 1 : -1));
     }, { passive: true });
+
+    /* ---------- Quiz do casal ---------- */
+    const quizCard = document.getElementById('quiz-card');
+    const quizQuestionEl = document.getElementById('quiz-question');
+    const quizOptionsEl = document.getElementById('quiz-options');
+    const quizFeedbackEl = document.getElementById('quiz-feedback');
+    const quizNextBtn = document.getElementById('quiz-next');
+    const quizStepEl = document.getElementById('quiz-step');
+    const quizBarEl = document.getElementById('quiz-progress-bar');
+    const quizResultEl = document.getElementById('quiz-result');
+
+    if (quizCard && quizQuestionEl && QUIZ.length) {
+      let qi = 0;
+      let acertos = 0;
+      let answered = false;
+
+      const renderQuestion = () => {
+        answered = false;
+        const q = QUIZ[qi];
+        quizStepEl.textContent = 'pergunta ' + (qi + 1) + ' de ' + QUIZ.length;
+        quizBarEl.style.width = ((qi) / QUIZ.length) * 100 + '%';
+        quizQuestionEl.textContent = q.pergunta;
+        quizFeedbackEl.textContent = '';
+        quizFeedbackEl.className = 'quiz-feedback';
+        quizNextBtn.style.display = 'none';
+        quizOptionsEl.innerHTML = '';
+        q.opcoes.forEach((opcao, i) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'quiz-option';
+          b.textContent = opcao;
+          b.addEventListener('click', () => selectOption(i, b));
+          quizOptionsEl.appendChild(b);
+        });
+      };
+
+      const selectOption = (i, btn) => {
+        if (answered) return;
+        answered = true;
+        const q = QUIZ[qi];
+        const opts = quizOptionsEl.querySelectorAll('.quiz-option');
+        opts.forEach((o, idx) => {
+          o.classList.add('disabled');
+          if (idx === q.correta) o.classList.add('correct');
+        });
+        if (i === q.correta) {
+          acertos++;
+          quizFeedbackEl.textContent = q.certo || 'Isso aí! Você me conhece bem 🥰';
+          quizFeedbackEl.classList.add('is-correct');
+        } else {
+          btn.classList.add('wrong');
+          quizFeedbackEl.textContent = q.errado || 'Quase! Mas o amor continua o mesmo 💛';
+          quizFeedbackEl.classList.add('is-wrong');
+        }
+        quizBarEl.style.width = ((qi + 1) / QUIZ.length) * 100 + '%';
+        quizNextBtn.textContent = qi < QUIZ.length - 1 ? 'Próxima pergunta →' : 'Ver resultado 💛';
+        quizNextBtn.style.display = 'inline-flex';
+      };
+
+      const finishQuiz = () => {
+        quizCard.style.display = 'none';
+        quizResultEl.classList.add('show');
+        const total = QUIZ.length;
+        document.getElementById('quiz-result-title').textContent =
+          acertos === total ? 'Gabaritou! Vocês são a dupla perfeita 💯' : 'Vocês são perfeitos um pro outro 💛';
+        document.getElementById('quiz-result-text').textContent =
+          'Acertou ' + acertos + ' de ' + total + ' — mas a gente já sabe que esse amor não precisa de nota pra ser o melhor.';
+      };
+
+      quizNextBtn.addEventListener('click', () => {
+        qi++;
+        if (qi < QUIZ.length) renderQuestion();
+        else finishQuiz();
+      });
+
+      renderQuestion();
+    }
 
     /* ---------- A pergunta: Sim / Não ---------- */
     const btnYes = document.getElementById('btn-yes');
@@ -289,6 +482,51 @@ document.addEventListener('DOMContentLoaded', () => {
       btnNo.addEventListener('mouseenter', dodge);
       btnNo.addEventListener('click', (e) => { e.preventDefault(); dodge(); });
       btnNo.addEventListener('touchstart', (e) => { e.preventDefault(); dodge(); }, { passive: false });
+    }
+
+    /* ---------- Cápsula do tempo ---------- */
+    const capsuleCard = document.getElementById('capsule-card');
+    if (capsuleCard) {
+      const capLocked = document.getElementById('capsule-locked');
+      const capOpenBtn = document.getElementById('capsule-open');
+      const capMessage = document.getElementById('capsule-message');
+      const capText = document.getElementById('capsule-text');
+      const capD = document.getElementById('cap-days');
+      const capH = document.getElementById('cap-hours');
+      const capM = document.getElementById('cap-mins');
+      const capS = document.getElementById('cap-secs');
+      const unlockAt = new Date(CONFIG.capsula.dataAbertura).getTime();
+      capText.textContent = CONFIG.capsula.mensagem;
+
+      let capsuleInterval = null;
+      const tickCapsule = () => {
+        const diff = unlockAt - Date.now();
+        if (diff > 0) {
+          let rest = diff;
+          const days = Math.floor(rest / 86400000); rest -= days * 86400000;
+          const hrs = Math.floor(rest / 3600000); rest -= hrs * 3600000;
+          const mins = Math.floor(rest / 60000); rest -= mins * 60000;
+          const secs = Math.floor(rest / 1000);
+          capD.textContent = days;
+          capH.textContent = pad(hrs);
+          capM.textContent = pad(mins);
+          capS.textContent = pad(secs);
+        } else {
+          if (capsuleInterval) clearInterval(capsuleInterval);
+          capLocked.style.display = 'none';
+          capOpenBtn.style.display = 'inline-flex';
+        }
+      };
+      tickCapsule();
+      capsuleInterval = setInterval(tickCapsule, 1000);
+
+      capOpenBtn.addEventListener('click', () => {
+        capOpenBtn.classList.add('opening');
+        setTimeout(() => {
+          capOpenBtn.style.display = 'none';
+          capMessage.classList.add('open');
+        }, 350);
+      });
     }
 
     /* ---------- Música de fundo (opcional) ---------- */

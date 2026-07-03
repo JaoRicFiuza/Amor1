@@ -374,58 +374,97 @@ nav ul a:hover::after { width: 100%; }
   color: var(--rose);
 }
 
-/* ---------- Linha do tempo ---------- */
-.timeline { position: relative; max-width: 760px; margin: 0 auto; padding-left: 2.6rem; }
-.timeline::before {
+/* ---------- Nossa história: carrossel cinematográfico ---------- */
+.story-section { padding: 0; }
+.story-section .section-head { padding: 5.5rem 1.5rem 2rem; position: relative; z-index: 3; }
+.story-carousel {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-3);
+}
+.story-slides { position: relative; width: 100%; height: 100%; }
+.story-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  display: flex;
+  align-items: flex-end;
+  transition: opacity 1s var(--ease);
+}
+.story-slide.is-active { opacity: 1; z-index: 1; }
+.story-slide::after {
   content: "";
   position: absolute;
-  left: 9px; top: 6px; bottom: 6px;
-  width: 2px;
-  background: linear-gradient(var(--rose), var(--gold));
-  opacity: 0.5;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(20, 5, 12, 0.9) 0%, rgba(20, 5, 12, 0.35) 45%, rgba(20, 5, 12, 0.1) 100%);
 }
-.tl-item { position: relative; margin-bottom: 3.2rem; }
-.tl-item::before {
-  content: "❤";
-  position: absolute;
-  left: -2.6rem; top: 2px;
-  font-size: 1.1rem;
-  color: var(--rose);
-  background: var(--bg-3);
-  line-height: 1;
-  transform: translateX(-2px);
+.story-slide-content {
+  position: relative;
+  z-index: 2;
+  padding: 3rem 3.5rem 4.5rem;
+  max-width: 620px;
+  color: #fff;
 }
-.tl-card {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 1.4rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1rem;
-  transition: transform 0.4s var(--ease), border-color 0.4s;
-}
-.tl-card:hover { transform: translateY(-4px); border-color: rgba(243, 138, 160, 0.4); }
-.tl-card img {
-  width: 130px; height: 160px;
-  object-fit: cover;
-  border-radius: 14px;
-}
-.tl-body { align-self: center; }
-.tl-date {
+.story-slide-content .tl-date {
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
-.tl-body h3 {
+.story-slide-content h3 {
   font-family: 'Fraunces', serif;
   font-weight: 500;
-  font-size: 1.35rem;
-  margin: 0 0 0.5rem;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  margin: 0 0 0.8rem;
 }
-.tl-body p { color: var(--muted); font-size: 0.98rem; margin: 0; }
+.story-slide-content p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.05rem;
+  margin: 0;
+}
+.story-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, transform 0.3s;
+}
+.story-arrow:hover { background: var(--rose-2); transform: translateY(-50%) scale(1.08); }
+.story-prev { left: 1.4rem; }
+.story-next { right: 1.4rem; }
+.story-dots {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  gap: 0.6rem;
+}
+.story-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.story-dot.is-active { background: var(--gold); transform: scale(1.3); }
 
 /* ---------- Galeria ---------- */
 .gallery-grid {
@@ -543,6 +582,107 @@ nav ul a:hover::after { width: 100%; }
   margin-top: 1.4rem;
 }
 
+/* ---------- Quiz do casal ---------- */
+#quiz { text-align: center; }
+.quiz-card {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 2.6rem 2.2rem;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+.quiz-progress {
+  height: 6px;
+  border-radius: 6px;
+  background: var(--line);
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+}
+.quiz-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--rose), var(--gold));
+  transition: width 0.5s var(--ease);
+}
+.quiz-step {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+.quiz-question {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.4rem;
+  margin: 0 0 1.6rem;
+}
+.quiz-options {
+  display: grid;
+  gap: 0.8rem;
+}
+.quiz-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.9rem 1.2rem;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  color: var(--cream);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease), border-color 0.25s, background 0.25s;
+}
+.quiz-option:hover:not(.disabled) {
+  transform: translateY(-2px);
+  border-color: var(--rose);
+}
+.quiz-option.disabled { cursor: default; }
+.quiz-option.correct {
+  border-color: var(--gold);
+  background: rgba(236, 182, 83, 0.16);
+  color: var(--gold);
+}
+.quiz-option.wrong {
+  border-color: var(--rose-2);
+  background: rgba(224, 100, 127, 0.14);
+}
+.quiz-feedback {
+  min-height: 1.6rem;
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  margin: 1.2rem 0 0;
+}
+.quiz-feedback.is-correct { color: var(--gold); }
+.quiz-feedback.is-wrong { color: var(--rose); }
+.quiz-next {
+  display: none;
+  margin: 1.6rem auto 0;
+  border: none;
+}
+.quiz-result {
+  display: none;
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+.quiz-result.show { display: block; }
+.quiz-result .big-heart { font-size: 3rem; animation: beat 1.3s infinite ease-in-out; }
+.quiz-result h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin: 1rem 0 0.6rem;
+}
+.quiz-result p { color: var(--muted); margin: 0 0 1.8rem; }
+
 /* ---------- A pergunta (proposta) ---------- */
 #proposal {
   text-align: center;
@@ -646,6 +786,72 @@ nav ul a:hover::after { width: 100%; }
   text-decoration: underline;
 }
 
+/* ---------- Cápsula do tempo ---------- */
+#capsule { text-align: center; }
+.capsule-card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 3rem 2.4rem;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow);
+}
+.capsule-lock { font-size: 3rem; margin-bottom: 0.8rem; animation: beat 1.8s infinite ease-in-out; }
+.capsule-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4rem;
+  color: var(--rose);
+  margin: 0 0 1.6rem;
+}
+.capsule-countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.capsule-seal {
+  display: none;
+  margin: 0 auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.8rem;
+  border-radius: 50px;
+  border: 1px dashed var(--gold);
+  background: rgba(236, 182, 83, 0.12);
+  color: var(--gold);
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease), background 0.3s, opacity 0.3s;
+}
+.capsule-seal:hover { transform: scale(1.05); background: rgba(236, 182, 83, 0.2); }
+.capsule-seal .seal-icon { font-size: 1.3rem; }
+.capsule-seal.opening { transform: scale(0.85); opacity: 0; pointer-events: none; }
+.capsule-message { display: none; }
+.capsule-message.open { display: block; animation: capsuleReveal 0.8s var(--ease); }
+.capsule-message .quote {
+  font-family: 'Fraunces', serif;
+  font-size: 3.5rem;
+  color: var(--rose-2);
+  line-height: 0;
+  display: block;
+  height: 1.4rem;
+}
+.capsule-message p {
+  font-size: 1.12rem;
+  color: #f0dfe0;
+  line-height: 1.9;
+  margin: 0 0 1.2rem;
+}
+@keyframes capsuleReveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* ---------- Botão de música ---------- */
 #music-toggle {
   position: fixed;
@@ -699,13 +905,19 @@ footer .fs { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--ros
   .gallery-grid { columns: 2; }
   .counter-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
   .section { padding: 5rem 1.2rem; }
+  .story-section .section-head { padding: 4.5rem 1.2rem 1.6rem; }
+  .story-slide-content { padding: 2rem 1.6rem 3.2rem; }
 }
 @media (max-width: 520px) {
   .gallery-grid { columns: 2; column-gap: 0.6rem; }
   .gallery-item { margin-bottom: 0.6rem; }
-  .tl-card { grid-template-columns: 100px 1fr; gap: 1rem; }
-  .tl-card img { width: 100px; height: 128px; }
+  .story-arrow { width: 42px; height: 42px; font-size: 1.2rem; }
+  .story-prev { left: 0.7rem; }
+  .story-next { right: 0.7rem; }
   .message-card { padding: 2rem 1.4rem; }
+  .quiz-card { padding: 2rem 1.4rem; }
+  .capsule-card { padding: 2.2rem 1.4rem; }
+  .capsule-countdown { gap: 0.5rem; }
   .proposal-buttons { gap: 1rem; }
   .btn { padding: 0.9rem 1.8rem; font-size: 1.05rem; }
   #lb-prev { left: 0.6rem; }

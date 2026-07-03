@@ -11,6 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Figtree:wght@300;400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="Amor/css/style.css" />
+
+  <!-- ===== PWA: permite "adicionar à tela inicial" ===== -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2a0c19" />
+  <link rel="icon" type="image/png" href="Amor/img/icon-192.png" />
+  <link rel="apple-touch-icon" href="Amor/img/icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nós ❤" />
+
   <!-- ativa os estados de animação só quando há JS -->
   <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -37,7 +47,9 @@
         <li><a href="#counter">Nosso tempo</a></li>
         <li><a href="#story">Nossa história</a></li>
         <li><a href="#gallery">Galeria</a></li>
+        <li><a href="#quiz">Quiz</a></li>
         <li><a href="#proposal">A pergunta</a></li>
+        <li><a href="#capsule">Cápsula</a></li>
       </ul>
     </nav>
   </header>
@@ -95,69 +107,57 @@
       <p class="counter-note reveal">...e que eu queria que não parasse nunca 🥹</p>
     </section>
 
-    <!-- ===== NOSSA HISTÓRIA (linha do tempo) ===== -->
-    <section id="story" class="section">
+    <!-- ===== NOSSA HISTÓRIA (carrossel cinematográfico) ===== -->
+    <section id="story" class="section story-section">
       <div class="section-head reveal">
         <span class="eyebrow">um pouquinho da gente</span>
         <h2 class="section-title">Nossa história</h2>
       </div>
 
-      <!-- EDITE as datas, títulos e textos de cada momento abaixo -->
-      <div class="timeline">
-        <div class="tl-item reveal">
-          <div class="tl-card">
-            <img src="Amor/img/foto13.jpeg" alt="Onde tudo começou" loading="lazy" />
-            <div class="tl-body">
+      <!-- EDITE as fotos, datas, títulos e textos de cada momento abaixo -->
+      <div class="story-carousel" id="story-carousel">
+        <div class="story-slides">
+          <div class="story-slide is-active" style="background-image: url('Amor/img/foto13.jpeg')">
+            <div class="story-slide-content">
               <div class="tl-date">o começo</div>
               <h3>Onde tudo começou</h3>
               <p>O primeiro de muitos sorrisos lado a lado. Ali eu já sabia que queria mais dias assim.</p>
             </div>
           </div>
-        </div>
-
-        <div class="tl-item reveal">
-          <div class="tl-card">
-            <img src="Amor/img/foto17.jpeg" alt="Seu aniversário" loading="lazy" />
-            <div class="tl-body">
+          <div class="story-slide" style="background-image: url('Amor/img/foto17.jpeg')">
+            <div class="story-slide-content">
               <div class="tl-date">seus 20 anos</div>
               <h3>Comemorando você</h3>
               <p>Bolo, risada e você iluminando tudo. Poder fazer parte dos seus dias felizes é um presente.</p>
             </div>
           </div>
-        </div>
-
-        <div class="tl-item reveal">
-          <div class="tl-card">
-            <img src="Amor/img/foto14.jpeg" alt="Torcendo pelo Brasil" loading="lazy" />
-            <div class="tl-body">
+          <div class="story-slide" style="background-image: url('Amor/img/foto14.jpeg')">
+            <div class="story-slide-content">
               <div class="tl-date">nossa torcida</div>
               <h3>Verde e amarelo com você</h3>
               <p>Até torcer fica melhor do seu lado. A gente transforma qualquer dia comum em memória.</p>
             </div>
           </div>
-        </div>
-
-        <div class="tl-item reveal">
-          <div class="tl-card">
-            <img src="Amor/img/foto12.jpeg" alt="Nosso date especial" loading="lazy" />
-            <div class="tl-body">
+          <div class="story-slide" style="background-image: url('Amor/img/foto12.jpeg')">
+            <div class="story-slide-content">
               <div class="tl-date">nosso date</div>
               <h3>Só um date especial</h3>
               <p>Combinando roupa, combinando sonho. Cada saída com você parece a primeira e a melhor.</p>
             </div>
           </div>
-        </div>
-
-        <div class="tl-item reveal">
-          <div class="tl-card">
-            <img src="Amor/img/foto8.jpeg" alt="Do nosso jeitinho" loading="lazy" />
-            <div class="tl-body">
+          <div class="story-slide" style="background-image: url('Amor/img/foto8.jpeg')">
+            <div class="story-slide-content">
               <div class="tl-date">todo dia</div>
               <h3>Do nosso jeitinho</h3>
               <p>Nas coisas simples é onde a gente mais se encontra. E é disso que eu não quero abrir mão.</p>
             </div>
           </div>
         </div>
+
+        <button class="story-arrow story-prev" id="story-prev" type="button" aria-label="Momento anterior">‹</button>
+        <button class="story-arrow story-next" id="story-next" type="button" aria-label="Próximo momento">›</button>
+
+        <div class="story-dots" id="story-dots"></div>
       </div>
     </section>
 
@@ -204,6 +204,31 @@
       </div>
     </section>
 
+    <!-- ===== QUIZ DO CASAL ===== -->
+    <section id="quiz" class="section">
+      <div class="section-head reveal">
+        <span class="eyebrow">antes da pergunta final</span>
+        <h2 class="section-title">Quiz do casal 💛</h2>
+      </div>
+
+      <!-- as perguntas são editadas em Amor/js/script.js, na constante QUIZ -->
+      <div class="quiz-card reveal" id="quiz-card">
+        <div class="quiz-progress"><div class="quiz-progress-bar" id="quiz-progress-bar"></div></div>
+        <div class="quiz-step" id="quiz-step"></div>
+        <h3 class="quiz-question" id="quiz-question"></h3>
+        <div class="quiz-options" id="quiz-options"></div>
+        <p class="quiz-feedback" id="quiz-feedback"></p>
+        <button class="hero-cta quiz-next" id="quiz-next" type="button">Próxima pergunta →</button>
+      </div>
+
+      <div class="quiz-result reveal" id="quiz-result">
+        <div class="big-heart">💛</div>
+        <h3 id="quiz-result-title"></h3>
+        <p id="quiz-result-text"></p>
+        <a href="#proposal" class="hero-cta">Ir pra pergunta final 🌹</a>
+      </div>
+    </section>
+
     <!-- ===== A PERGUNTA ===== -->
     <section id="proposal" class="section">
       <div class="reveal">
@@ -214,6 +239,40 @@
       <div class="proposal-buttons reveal">
         <button id="btn-yes" class="btn">Sim! 🥰</button>
         <button id="btn-no" class="btn">Não 😅</button>
+      </div>
+    </section>
+
+    <!-- ===== CÁPSULA DO TEMPO ===== -->
+    <section id="capsule" class="section">
+      <div class="section-head reveal">
+        <span class="eyebrow">uma surpresa para o futuro</span>
+        <h2 class="section-title">Cápsula do tempo 🔐</h2>
+      </div>
+
+      <!-- edite a data de abertura e a mensagem em Amor/js/script.js, na constante CONFIG.capsula -->
+      <div class="capsule-card reveal" id="capsule-card">
+
+        <div class="capsule-locked" id="capsule-locked">
+          <div class="capsule-lock">🔒</div>
+          <p class="capsule-note">essa cartinha só abre em:</p>
+          <div class="capsule-countdown">
+            <div class="count-box"><div class="num" id="cap-days">0</div><div class="lbl">dias</div></div>
+            <div class="count-box"><div class="num" id="cap-hours">0</div><div class="lbl">horas</div></div>
+            <div class="count-box"><div class="num" id="cap-mins">0</div><div class="lbl">minutos</div></div>
+            <div class="count-box"><div class="num" id="cap-secs">0</div><div class="lbl">segundos</div></div>
+          </div>
+        </div>
+
+        <button class="capsule-seal" id="capsule-open" type="button">
+          <span class="seal-icon">🔓</span>
+          <span>clique pra abrir a cartinha</span>
+        </button>
+
+        <div class="capsule-message" id="capsule-message">
+          <span class="quote">&ldquo;</span>
+          <p id="capsule-text"></p>
+          <div class="signature">— seu, para sempre 💌</div>
+        </div>
       </div>
     </section>
 

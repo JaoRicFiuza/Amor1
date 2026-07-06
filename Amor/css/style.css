@@ -468,38 +468,217 @@ nav ul a:hover::after { width: 100%; }
 }
 .story-dot.is-active { background: var(--gold); transform: scale(1.3); }
 
-/* ---------- Galeria ---------- */
-.gallery-grid {
-  columns: 3;
-  column-gap: 1rem;
+/* ---------- Álbum de fotos ---------- */
+.album-hint {
+  display: block;
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.85rem;
 }
-.gallery-item {
-  break-inside: avoid;
-  margin-bottom: 1rem;
+.album {
   position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 1px solid var(--line);
-}
-.gallery-item img {
-  width: 100%;
-  transition: transform 0.6s var(--ease), filter 0.4s;
-}
-.gallery-item::after {
-  content: "🔍";
-  position: absolute;
-  inset: 0;
+  max-width: 760px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
-  background: linear-gradient(0deg, rgba(28, 7, 18, 0.55), rgba(28, 7, 18, 0.1));
-  opacity: 0;
-  transition: opacity 0.4s;
+  gap: 1rem;
 }
-.gallery-item:hover img { transform: scale(1.08); filter: saturate(1.1); }
-.gallery-item:hover::after { opacity: 1; }
+.album-book {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  aspect-ratio: 16 / 10;
+  perspective: 1800px;
+  background: linear-gradient(160deg, var(--bg-2), var(--bg-3));
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  touch-action: pan-y;
+  cursor: grab;
+}
+.album-page {
+  position: absolute;
+  inset: 0;
+  padding: 1.6rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  align-items: center;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  transition: transform 0.85s var(--ease);
+  background:
+    linear-gradient(160deg, rgba(255, 240, 245, 0.04), transparent),
+    var(--bg-2);
+  border-radius: 18px;
+}
+.album-page.is-single { grid-template-columns: 1fr; justify-items: center; }
+.album-page.is-single .album-photo-slot { width: 55%; }
+.album-photo-slot {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 6px solid var(--cream);
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.55);
+  transform: rotate(var(--tilt, -1.5deg));
+  cursor: pointer;
+}
+.album-photo-slot:nth-child(2) { --tilt: 1.5deg; }
+.album-photo-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.album-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 0.5rem 0.6rem;
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  color: #fff;
+  background: linear-gradient(0deg, rgba(20, 5, 12, 0.85), transparent);
+}
+.album-remove {
+  position: absolute;
+  top: 0.4rem; right: 0.4rem;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(12, 3, 8, 0.75);
+  color: #fff;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.album-add-slot {
+  border-style: dashed;
+  border-color: var(--line);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.album-add-slot span {
+  color: var(--muted);
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+.album-arrow {
+  flex: none;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--cream);
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, transform 0.3s;
+}
+.album-arrow:hover { background: var(--rose-2); transform: scale(1.08); }
+.album-arrow:disabled { opacity: 0.35; cursor: not-allowed; transform: none; background: var(--surface-2); }
+.album-footer {
+  margin-top: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+.album-page-indicator {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.album-add-btn {
+  padding: 0.7rem 1.4rem;
+  border-radius: 50px;
+  border: 1px dashed var(--gold);
+  background: rgba(236, 182, 83, 0.1);
+  color: var(--gold);
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.album-add-btn:hover { background: rgba(236, 182, 83, 0.2); transform: translateY(-2px); }
+
+/* mini formulário de revisão da foto antes de adicionar */
+.album-review {
+  position: fixed;
+  inset: 0;
+  z-index: 2400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(12, 3, 8, 0.82);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s;
+}
+.album-review.open { opacity: 1; visibility: visible; }
+.album-review-card {
+  max-width: 360px;
+  width: 100%;
+  background: linear-gradient(160deg, var(--bg-2), var(--bg));
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 1.6rem;
+  box-shadow: var(--shadow);
+}
+.album-review-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+.album-review-card input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--cream);
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+.album-review-card input::placeholder { color: var(--muted); }
+.album-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.album-review-actions .btn {
+  padding: 0.7rem 1.4rem;
+  font-size: 0.95rem;
+  color: #fff;
+  background: linear-gradient(90deg, var(--rose-2), var(--rose));
+  box-shadow: 0 14px 34px -10px rgba(224, 100, 127, 0.6);
+}
+.album-review-actions .btn:hover { transform: translateY(-2px); }
+.album-review-cancel {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 /* ---------- Lightbox ---------- */
 #lightbox {
@@ -904,15 +1083,16 @@ footer .fs { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--ros
   }
   .hero-copy p { margin-left: auto; margin-right: auto; }
   .hero-copy .eyebrow { text-align: center; }
-  .gallery-grid { columns: 2; }
   .counter-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
   .section { padding: 5rem 1.2rem; }
   .story-section .section-head { padding: 4.5rem 1.2rem 1.6rem; }
   .story-slide-content { padding: 2rem 1.6rem 3.2rem; }
+  .album-book { aspect-ratio: 3 / 4; }
+  .album-page { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; padding: 1.1rem; gap: 0.8rem; }
+  .album-page.is-single { grid-template-rows: 1fr; }
+  .album-page.is-single .album-photo-slot { width: 70%; }
 }
 @media (max-width: 520px) {
-  .gallery-grid { columns: 2; column-gap: 0.6rem; }
-  .gallery-item { margin-bottom: 0.6rem; }
   .story-arrow { width: 42px; height: 42px; font-size: 1.2rem; }
   .story-prev { left: 0.7rem; }
   .story-next { right: 0.7rem; }
@@ -924,6 +1104,8 @@ footer .fs { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--ros
   .btn { padding: 0.9rem 1.8rem; font-size: 1.05rem; }
   #lb-prev { left: 0.6rem; }
   #lb-next { right: 0.6rem; }
+  .album { gap: 0.5rem; }
+  .album-arrow { width: 38px; height: 38px; font-size: 1.1rem; }
 }
 
 /* ---------- Movimento reduzido ---------- */

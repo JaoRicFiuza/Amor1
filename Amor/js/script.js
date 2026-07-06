@@ -72,6 +72,28 @@ document.addEventListener('DOMContentLoaded', () => {
     },
   ];
 
+  // Fotos do álbum. Adicione/remova objetos aqui (com "caption" opcional) —
+  // o tamanho e o estilo de cada foto se ajustam sozinhos ao layout do álbum.
+  const ALBUM_PHOTOS = [
+    { src: 'Amor/img/foto1.jpeg' },
+    { src: 'Amor/img/foto2.jpeg' },
+    { src: 'Amor/img/foto3.jpeg' },
+    { src: 'Amor/img/foto4.jpeg' },
+    { src: 'Amor/img/foto5.jpeg' },
+    { src: 'Amor/img/foto6.jpeg' },
+    { src: 'Amor/img/foto7.jpeg' },
+    { src: 'Amor/img/foto8.jpeg' },
+    { src: 'Amor/img/foto9.jpeg' },
+    { src: 'Amor/img/foto10.jpeg' },
+    { src: 'Amor/img/foto11.jpeg' },
+    { src: 'Amor/img/foto12.jpeg' },
+    { src: 'Amor/img/foto13.jpeg' },
+    { src: 'Amor/img/foto14.jpeg' },
+    { src: 'Amor/img/foto15.jpeg' },
+    { src: 'Amor/img/foto16.jpeg' },
+    { src: 'Amor/img/foto17.jpeg' },
+  ];
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const preloader = document.getElementById('preloader');
 
@@ -107,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const stagger = (selector, step) =>
       document.querySelectorAll(selector).forEach((el, i) =>
         el.style.setProperty('--d', (i * step) + 's'));
-    stagger('.gallery-item', 0.05);
     stagger('.count-box', 0.08);
 
     /* ---------- Rolagem suave (Lenis) ---------- */
@@ -338,13 +359,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    /* ---------- Lightbox da galeria ---------- */
-    const imgs = Array.from(document.querySelectorAll('.gallery-item img'));
+    /* ---------- Lightbox (usado pelas fotos do álbum) ---------- */
+    let imgs = [];
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
     const lbCounter = document.getElementById('lb-counter');
     let idx = 0;
     const showLb = (i) => {
+      if (!imgs.length) return;
       idx = (i + imgs.length) % imgs.length;
       lbImg.src = imgs[idx].src;
       lbCounter.textContent = (idx + 1) + ' / ' + imgs.length;
@@ -360,7 +382,13 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       if (lenis) lenis.start();
     };
-    imgs.forEach((im, i) => im.parentElement.addEventListener('click', () => openLb(i)));
+    // reconstrói a lista de imagens do lightbox; chamada de novo sempre que o álbum é redesenhado
+    const rebindLightbox = () => {
+      imgs = Array.from(document.querySelectorAll('.album-photo-slot img'));
+      imgs.forEach((im, i) => {
+        im.addEventListener('click', (e) => { e.stopPropagation(); openLb(i); });
+      });
+    };
     document.getElementById('lb-close').addEventListener('click', closeLb);
     document.getElementById('lb-next').addEventListener('click', () => showLb(idx + 1));
     document.getElementById('lb-prev').addEventListener('click', () => showLb(idx - 1));
@@ -377,6 +405,262 @@ document.addEventListener('DOMContentLoaded', () => {
       const dx = e.changedTouches[0].clientX - sx;
       if (Math.abs(dx) > 50) showLb(idx + (dx < 0 ? 1 : -1));
     }, { passive: true });
+
+    /* ---------- Álbum de fotos: livro interativo com virar de página ---------- */
+    const albumBook = document.getElementById('album-book');
+    if (albumBook) {
+      const albumPrev = document.getElementById('album-prev');
+      const albumNext = document.getElementById('album-next');
+      const albumIndicator = document.getElementById('album-page-indicator');
+      const albumAddBtn = document.getElementById('album-add-btn');
+      const albumFileInput = document.getElementById('album-file-input');
+      const albumReview = document.getElementById('album-review');
+      const albumReviewImg = document.getElementById('album-review-img');
+      const albumReviewCaption = document.getElementById('album-review-caption');
+      const albumReviewConfirm = document.getElementById('album-review-confirm');
+      const albumReviewCancel = document.getElementById('album-review-cancel');
+
+      const ALBUM_STORAGE_KEY = 'amor-album-photos';
+      const ALBUM_MAX_DIMENSION = 1000;
+      const ALBUM_JPEG_QUALITY = 0.82;
+      const ALBUM_DRAG_THRESHOLD = 60;
+      const ALBUM_DRAG_MAX_DEG = 50;
+
+      // redimensiona/comprime a imagem no navegador antes de guardar (evita estourar o limite do localStorage)
+      const resizeImageFile = (file, maxSize, quality) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(reader.error);
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              if (width >= height) { height = Math.round(height * (maxSize / width)); width = maxSize; }
+              else { width = Math.round(width * (maxSize / height)); height = maxSize; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      const loadUserPhotos = () => {
+        try {
+          const raw = localStorage.getItem(ALBUM_STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (err) { return []; }
+      };
+      const saveUserPhotos = (photos) => {
+        try {
+          localStorage.setItem(ALBUM_STORAGE_KEY, JSON.stringify(photos));
+          return true;
+        } catch (err) {
+          return false;
+        }
+      };
+
+      let userPhotos = loadUserPhotos();
+      let albumIndex = 0;
+      let albumPages = [];
+      let pendingReviewSrc = null;
+
+      const removeUserPhoto = (id) => {
+        userPhotos = userPhotos.filter((p) => p.id !== id);
+        saveUserPhotos(userPhotos);
+        renderAlbum(albumIndex);
+      };
+
+      const createPhotoSlot = (photo) => {
+        const slot = document.createElement('div');
+        slot.className = 'album-photo-slot';
+
+        const img = document.createElement('img');
+        img.src = photo.src;
+        img.alt = photo.caption || 'Foto do casal';
+        img.loading = 'lazy';
+        slot.appendChild(img);
+
+        if (photo.caption) {
+          const cap = document.createElement('div');
+          cap.className = 'album-caption';
+          cap.textContent = photo.caption;
+          slot.appendChild(cap);
+        }
+
+        if (photo.removable) {
+          const rm = document.createElement('button');
+          rm.type = 'button';
+          rm.className = 'album-remove';
+          rm.textContent = '✕';
+          rm.setAttribute('aria-label', 'Remover foto');
+          rm.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeUserPhoto(photo.id);
+          });
+          slot.appendChild(rm);
+        }
+
+        return slot;
+      };
+
+      const createAddSlot = () => {
+        const slot = document.createElement('div');
+        slot.className = 'album-photo-slot album-add-slot';
+        const span = document.createElement('span');
+        span.textContent = '+ adicionar foto aqui';
+        slot.appendChild(span);
+        slot.addEventListener('click', () => albumFileInput.click());
+        return slot;
+      };
+
+      const buildPages = () => {
+        const all = ALBUM_PHOTOS.map((p) => ({ src: p.src, caption: p.caption, removable: false }))
+          .concat(userPhotos.map((p) => ({ src: p.src, caption: p.caption, removable: true, id: p.id })));
+        const pages = [];
+        for (let i = 0; i < all.length; i += 2) pages.push(all.slice(i, i + 2));
+        if (!pages.length || pages[pages.length - 1].length === 2) pages.push([]);
+        return pages;
+      };
+
+      const renderAlbum = (targetIndex) => {
+        albumPages = buildPages();
+        albumBook.innerHTML = '';
+        const total = albumPages.length;
+
+        albumPages.forEach((pagePhotos, pi) => {
+          const pageEl = document.createElement('div');
+          pageEl.className = 'album-page';
+
+          pagePhotos.forEach((photo) => pageEl.appendChild(createPhotoSlot(photo)));
+
+          if (pi === total - 1 && pagePhotos.length < 2) {
+            pageEl.appendChild(createAddSlot());
+          }
+          if (pageEl.children.length < 2) pageEl.classList.add('is-single');
+
+          albumBook.appendChild(pageEl);
+        });
+
+        const pageEls = Array.from(albumBook.querySelectorAll('.album-page'));
+        albumIndex = Math.max(0, Math.min(total - 1, targetIndex != null ? targetIndex : albumIndex));
+
+        pageEls.forEach((pageEl, i) => {
+          pageEl.style.zIndex = i < albumIndex ? i : total - i;
+          pageEl.style.transform = i < albumIndex ? 'rotateY(-165deg)' : 'rotateY(0deg)';
+        });
+
+        albumIndicator.textContent = 'página ' + (albumIndex + 1) + ' de ' + total;
+        albumPrev.disabled = albumIndex === 0;
+        albumNext.disabled = albumIndex === total - 1;
+
+        rebindLightbox();
+      };
+
+      const goToAlbumPage = (i) => {
+        const total = albumPages.length;
+        i = Math.max(0, Math.min(total - 1, i));
+        if (i === albumIndex) return;
+        renderAlbum(i);
+      };
+
+      albumPrev.addEventListener('click', () => goToAlbumPage(albumIndex - 1));
+      albumNext.addEventListener('click', () => goToAlbumPage(albumIndex + 1));
+
+      /* arrastar para virar a página (dedo ou mouse) */
+      let albumDragging = false;
+      let albumDragStartX = 0;
+      let albumDragDeltaX = 0;
+      let albumDragPageEl = null;
+
+      albumBook.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('.album-remove, .album-add-slot, .album-arrow')) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        albumDragging = true;
+        albumDragStartX = e.clientX;
+        albumDragDeltaX = 0;
+        const pageEls = albumBook.querySelectorAll('.album-page');
+        albumDragPageEl = pageEls[albumIndex] || null;
+        if (albumDragPageEl) albumDragPageEl.style.transition = 'none';
+        if (albumBook.setPointerCapture) {
+          try { albumBook.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      });
+
+      albumBook.addEventListener('pointermove', (e) => {
+        if (!albumDragging || !albumDragPageEl) return;
+        albumDragDeltaX = e.clientX - albumDragStartX;
+        const deg = Math.max(-ALBUM_DRAG_MAX_DEG, Math.min(ALBUM_DRAG_MAX_DEG, (albumDragDeltaX / 220) * ALBUM_DRAG_MAX_DEG));
+        if (deg < 0 && albumIndex < albumPages.length - 1) {
+          albumDragPageEl.style.transform = 'rotateY(' + deg + 'deg)';
+        } else if (deg > 0 && albumIndex > 0) {
+          albumDragPageEl.style.transform = 'rotateY(' + deg + 'deg)';
+        }
+      });
+
+      const endAlbumDrag = () => {
+        if (!albumDragging) return;
+        albumDragging = false;
+        const dx = albumDragDeltaX;
+        if (albumDragPageEl) {
+          albumDragPageEl.style.transition = '';
+          albumDragPageEl.style.transform = '';
+        }
+        if (Math.abs(dx) > ALBUM_DRAG_THRESHOLD) {
+          goToAlbumPage(albumIndex + (dx < 0 ? 1 : -1));
+        }
+        albumDragPageEl = null;
+      };
+      albumBook.addEventListener('pointerup', endAlbumDrag);
+      albumBook.addEventListener('pointercancel', endAlbumDrag);
+
+      /* adicionar foto ao álbum */
+      albumAddBtn.addEventListener('click', () => albumFileInput.click());
+
+      albumFileInput.addEventListener('change', () => {
+        const file = albumFileInput.files && albumFileInput.files[0];
+        albumFileInput.value = '';
+        if (!file) return;
+        resizeImageFile(file, ALBUM_MAX_DIMENSION, ALBUM_JPEG_QUALITY).then((dataUrl) => {
+          pendingReviewSrc = dataUrl;
+          albumReviewImg.src = dataUrl;
+          albumReviewCaption.value = '';
+          albumReview.classList.add('open');
+        }).catch(() => {});
+      });
+
+      const closeAlbumReview = () => {
+        albumReview.classList.remove('open');
+        pendingReviewSrc = null;
+      };
+      albumReviewCancel.addEventListener('click', closeAlbumReview);
+      albumReview.addEventListener('click', (e) => { if (e.target === albumReview) closeAlbumReview(); });
+
+      albumReviewConfirm.addEventListener('click', () => {
+        if (!pendingReviewSrc) return;
+        const photo = {
+          id: 'u' + Date.now() + Math.random().toString(16).slice(2),
+          src: pendingReviewSrc,
+          caption: albumReviewCaption.value.trim().slice(0, 80),
+        };
+        userPhotos.push(photo);
+        const saved = saveUserPhotos(userPhotos);
+        closeAlbumReview();
+        if (!saved) {
+          userPhotos.pop();
+          alert('Não foi possível salvar a foto — o navegador pode estar sem espaço de armazenamento.');
+          return;
+        }
+        renderAlbum(Math.floor((ALBUM_PHOTOS.length + userPhotos.length - 1) / 2));
+      });
+
+      renderAlbum(0);
+    }
 
     /* ---------- Quiz do casal ---------- */
     const quizCard = document.getElementById('quiz-card');

@@ -165,27 +165,35 @@
     <section id="gallery" class="section">
       <div class="section-head reveal">
         <span class="eyebrow">nossos momentos favoritos</span>
-        <h2 class="section-title">Galeria</h2>
+        <h2 class="section-title">Álbum de fotos</h2>
+        <p class="album-hint">arraste ou use as setas para virar as páginas</p>
       </div>
-      <!-- clique em qualquer foto para ampliar -->
-      <div class="gallery-grid">
-        <div class="gallery-item reveal"><img src="Amor/img/foto1.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto2.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto3.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto4.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto5.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto6.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto7.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto8.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto9.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto10.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto11.jpeg" alt="Foto do casal" loading="lazy" /></div>
-        <div class="gallery-item reveal"><img src="Amor/img/foto12.jpeg" alt="Foto do casal" loading="lazy" /></div>
-         <div class="gallery-item reveal"><img src="Amor/img/foto13.jpeg" alt="Foto do casal" loading="lazy" /></div>
-          <div class="gallery-item reveal"><img src="Amor/img/foto14.jpeg" alt="Foto do casal" loading="lazy" /></div>
-           <div class="gallery-item reveal"><img src="Amor/img/foto15.jpeg" alt="Foto do casal" loading="lazy" /></div>
-            <div class="gallery-item reveal"><img src="Amor/img/foto16.jpeg" alt="Foto do casal" loading="lazy" /></div>
-             <div class="gallery-item reveal"><img src="Amor/img/foto17.jpeg" alt="Foto do casal" loading="lazy" /></div>
+
+      <!-- as páginas do álbum são geradas por JS a partir de ALBUM_PHOTOS, em Amor/js/script.js -->
+      <div class="album reveal" id="album">
+        <button class="album-arrow album-prev" id="album-prev" type="button" aria-label="Página anterior">‹</button>
+
+        <div class="album-book" id="album-book"></div>
+
+        <button class="album-arrow album-next" id="album-next" type="button" aria-label="Próxima página">›</button>
+      </div>
+
+      <div class="album-footer reveal">
+        <div class="album-page-indicator" id="album-page-indicator"></div>
+        <button class="album-add-btn" id="album-add-btn" type="button">+ adicionar foto ao álbum</button>
+        <input type="file" accept="image/*" id="album-file-input" hidden />
+      </div>
+
+      <!-- mini formulário de revisão antes de confirmar a foto adicionada -->
+      <div class="album-review" id="album-review">
+        <div class="album-review-card">
+          <img id="album-review-img" src="" alt="Prévia da foto" />
+          <input type="text" id="album-review-caption" maxlength="80" placeholder="uma legendinha (opcional)" />
+          <div class="album-review-actions">
+            <button type="button" class="btn" id="album-review-confirm">Adicionar ❤</button>
+            <button type="button" class="album-review-cancel" id="album-review-cancel">cancelar</button>
+          </div>
+        </div>
       </div>
     </section>
 
